@@ -28,7 +28,6 @@ setup(
     platforms='any',
     setup_requires=[
         'Flask-Views',
-        'Flask-MongoEngine',
         'mimerender',
         'nose',
         'coverage',
@@ -42,6 +41,7 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Topic :: Internet :: WWW/HTTP :: Dynamic Content'
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+        'Topic :: Software Development :: Libraries :: Python Modules'
     ]
 )

@@ -7,7 +7,7 @@ from bson.dbref import DBRef
 from bson.objectid import ObjectId
 from flask import request, url_for
 from urllib.parse import urlparse
-from mongoengine.fields import EmbeddedDocumentField, ListField, ReferenceField, GenericReferenceField, SafeReferenceField
+from mongoengine.fields import EmbeddedDocumentField, ListField, ReferenceField, GenericReferenceField
 from mongoengine.fields import DateTimeField, DictField
 from werkzeug.datastructures import MultiDict
 
@@ -416,12 +416,7 @@ class Resource(object, metaclass=ResourceMeta):
                 for obj in document_queryset[k]:
                     hint_field_instance = obj._fields[hint_field]
                     # Don't trigger a query for SafeReferenceFields
-                    if isinstance(hint_field_instance, SafeReferenceField):
-                        hinted = obj._db_data[hint_field]
-                        if hint_field_instance.dbref:
-                            hinted = hinted.id
-                    else:
-                        hinted = str(getattr(obj, hint_field).id)
+                    hinted = str(getattr(obj, hint_field).id)
                     if hinted not in hint_index:
                         hint_index[hinted] = [obj]
                     else:
