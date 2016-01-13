@@ -18,8 +18,8 @@ def response_error(response, code=None):
         assert code == response.status_code, 'Received %d response: %s' % (response.status_code, response.data)
 
 def compare_req_resp(req_obj, resp_obj):
-    for k,v in req_obj.items():
-        assert k in list(resp_obj.keys()), 'Key %r not in response (keys are %r)' % (k, list(resp_obj.keys()))
+    for k,v in req_obj.iteritems():
+        assert k in resp_obj.keys(), 'Key %r not in response (keys are %r)' % (k, resp_obj.keys())
         assert resp_obj[k] == v, 'Value for key %r should be %r but is %r' % (k, v, resp_obj[k])
 
 
@@ -129,7 +129,7 @@ class MongoRestTestCase(unittest.TestCase):
         response_error(resp)
         errors = json.loads(resp.data)
         self.assertTrue('field-errors' in errors)
-        self.assertEqual(list(errors['field-errors'].keys()), ['email'])
+        self.assertEqual(errors['field-errors'].keys(), ['email'])
 
         resp = self.app.put('/user/%s/' % self.user_1_obj['id'], data=json.dumps({
             'email': 'invalid',
@@ -139,7 +139,7 @@ class MongoRestTestCase(unittest.TestCase):
         response_error(resp)
         errors = json.loads(resp.data)
         self.assertTrue('field-errors' in errors)
-        self.assertEqual(list(errors['field-errors'].keys()), ['email'])
+        self.assertEqual(errors['field-errors'].keys(), ['email'])
 
         resp = self.app.put('/user/%s/' % self.user_1_obj['id'], data=json.dumps({
             'emails': ['one@example.com', 'invalid', 'second@example.com', 'invalid2'],
@@ -148,8 +148,8 @@ class MongoRestTestCase(unittest.TestCase):
         response_error(resp)
         errors = json.loads(resp.data)
         self.assertTrue('field-errors' in errors)
-        self.assertEqual(list(errors['field-errors'].keys()), ['emails'])
-        self.assertEqual(list(errors['field-errors']['emails']['errors'].keys()), ['1', '3'])
+        self.assertEqual(errors['field-errors'].keys(), ['emails'])
+        self.assertEqual(errors['field-errors']['emails']['errors'].keys(), ['1', '3'])
 
     def test_resource_fields(self):
         resp = self.app.post('/testfields/', data=json.dumps({
@@ -425,7 +425,7 @@ class MongoRestTestCase(unittest.TestCase):
         response_error(resp)
         data = json.loads(resp.data)
         self.assertEqual(data['count'], 0)
-        self.assertEqual(list(data['field-errors'].keys()), ['description'])
+        self.assertEqual(data['field-errors'].keys(), ['description'])
 
     def test_post_auto_art_tag(self):
         # create a post by vangogh and an 'art' tag should be added automatically
@@ -591,12 +591,12 @@ class MongoRestTestCase(unittest.TestCase):
         resp = self.app.get('/user/%s/?_fields=email' % self.user_1_obj['id'])
         response_success(resp)
         user = json.loads(resp.data)
-        self.assertEqual(list(user.keys()), ['email'])
+        self.assertEqual(user.keys(), ['email'])
 
         resp = self.app.get('/user/%s/?_fields=first_name,last_name' % self.user_1_obj['id'])
         response_success(resp)
         user = json.loads(resp.data)
-        self.assertEqual(list(user.keys()), ['first_name','last_name'])
+        self.assertEqual(user.keys(), ['first_name','last_name'])
 
         # Make sure all fields can still be posted.
         test_user_data = {
@@ -609,7 +609,7 @@ class MongoRestTestCase(unittest.TestCase):
         resp = self.app.post('/user/?_fields=id', data=json.dumps(test_user_data))
         response_success(resp)
         user = json.loads(resp.data)
-        self.assertEqual(list(user.keys()), ['id'])
+        self.assertEqual(user.keys(), ['id'])
 
     def test_invalid_json(self):
         resp = self.app.post('/user/', data='{\"}')

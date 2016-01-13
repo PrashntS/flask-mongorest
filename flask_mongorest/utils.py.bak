@@ -17,7 +17,7 @@ def isint(int_str):
 class MongoEncoder(json.JSONEncoder):
     def default(self, value, **kwargs):
         if isinstance(value, ObjectId):
-            return str(value)
+            return unicode(value)
         if isinstance(value, DBRef):
             return value.id
         if isinstance(value, datetime.datetime):
@@ -55,7 +55,7 @@ def equal(a, b):
     if isinstance(a, dict) and isinstance(b, dict):
         if sorted(a.keys()) != sorted(b.keys()):
             return False
-        for k, v in a.items():
+        for k, v in a.iteritems():
             if not equal(b[k], v):
                 return False
         return True
